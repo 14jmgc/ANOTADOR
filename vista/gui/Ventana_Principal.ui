@@ -158,14 +158,14 @@
            <widget class="QListView" name="lv_notass"/>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="pb_crearNota">
             <property name="text">
              <string>Crear Nota</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="pb_eliminarNota">
             <property name="text">
              <string>Eliminar Nota</string>
             </property>

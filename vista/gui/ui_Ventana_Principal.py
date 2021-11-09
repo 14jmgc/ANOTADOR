@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'Ventana_PrincipalqAfLuR.ui'
+## Form generated from reading UI file 'Ventana_PrincipalawbXoo.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -133,15 +133,15 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_6.addWidget(self.lv_notass)
 
-        self.pushButton = QPushButton(self.f_notass)
-        self.pushButton.setObjectName(u"pushButton")
+        self.pb_crearNota = QPushButton(self.f_notass)
+        self.pb_crearNota.setObjectName(u"pb_crearNota")
 
-        self.verticalLayout_6.addWidget(self.pushButton)
+        self.verticalLayout_6.addWidget(self.pb_crearNota)
 
-        self.pushButton_2 = QPushButton(self.f_notass)
-        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.pb_eliminarNota = QPushButton(self.f_notass)
+        self.pb_eliminarNota.setObjectName(u"pb_eliminarNota")
 
-        self.verticalLayout_6.addWidget(self.pushButton_2)
+        self.verticalLayout_6.addWidget(self.pb_eliminarNota)
 
 
         self.horizontalLayout_2.addWidget(self.f_notass)
@@ -204,8 +204,8 @@ class Ui_MainWindow(object):
         self.pb_crearPagina.setText(QCoreApplication.translate("MainWindow", u"Crear P\u00e1gina", None))
         self.pb_eliminarPagina.setText(QCoreApplication.translate("MainWindow", u"Eliminar P\u00e1gina", None))
         self.lbl_notass.setText(QCoreApplication.translate("MainWindow", u"Notas", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Crear Nota", None))
-        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Eliminar Nota", None))
+        self.pb_crearNota.setText(QCoreApplication.translate("MainWindow", u"Crear Nota", None))
+        self.pb_eliminarNota.setText(QCoreApplication.translate("MainWindow", u"Eliminar Nota", None))
         self.lbl_nota.setText(QCoreApplication.translate("MainWindow", u"Nota", None))
         self.pb_archivar.setText(QCoreApplication.translate("MainWindow", u"Archivar Nota", None))
     # retranslateUi

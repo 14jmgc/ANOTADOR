@@ -123,13 +123,13 @@ class Anotador:
         else:
             return None
 
-    def crear_nota(self, nota: Nota):
-        Not = self.buscar_nota(nota.titulo)
+    def crear_nota(self, titulo_Nota, fecha_Nota, etiqueta_Nota):
+        Not = self.buscar_nota(titulo_Nota)
         if Not is None:
-            self.notas[nota.titulo] = (nota.fecha, nota.etiqueta, nota.contenido)
-            self.etiquetas.append(nota.etiqueta)
+            nota = titulo_Nota + "     " + "Fecha de creacion: " + fecha_Nota + "     " + "Etiqueta.  " + etiqueta_Nota
+            self.etiquetas.append(nota)
         else:
-            raise ElementoExistenteError(nota.titulo, f"Ya existe una nota con el titulo {nota.titulo}")
+            raise ElementoExistenteError(titulo_Nota, f"Ya existe una nota con el titulo {titulo_Nota}")
 
     def eliminar_nota(self, titulo_nota):
         nota = self.buscar_nota(titulo_nota)
@@ -153,3 +153,5 @@ class Anotador:
             return etiqueta
         else:
             raise ElementoNoExistenteError(etiqueta, f"No existe una etiqueta con el titulo {etiqueta}")
+
+

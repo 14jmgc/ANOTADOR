@@ -13,7 +13,6 @@ from vista.gui.ui_crearNota import Ui_DialogCrearNota
 
 
 class VentanaAnotador(QMainWindow):
-
     def __init__(self, anotador:Anotador):
         QMainWindow.__init__(self)
         self.anotador = anotador
@@ -28,6 +27,8 @@ class VentanaAnotador(QMainWindow):
         self.ui.lv_libros.setModel(QStandardItemModel())
         self.ui.lv_libros.selectionChanged = self.seleccionar_libro
 
+        self.ui.pb_eliminarLibro.clicked.connect(self.eliminar_libro())
+
         self.ui.f_secciones.setEnabled(False)
         self.ui.pb_crearSeccion.clicked.connect(self.abrir_dialogo_crear_seccion)
         self.ui.lv_secciones.setModel(QStandardItemModel())
@@ -39,10 +40,10 @@ class VentanaAnotador(QMainWindow):
         self.ui.lv_paginas.selectionChanged = self.seleccionar_pagina
 
         self.ui.f_nota.setEnabled(False)
-
+        self.ui.pb_crearNota.clicked.connect(self.abrir_dialogo_crear_notas)
         self.ui.lv_notass.setModel(QStandardItemModel())
         self.ui.f_notass.setEnabled(False)
-
+        self.ui.lv_notass.selectionChanged = self.seleccionar_nota
 
     def abrir_dialogo_crear_libro(self):
         dialogo = DialogCrearLibro(self)
@@ -77,11 +78,39 @@ class VentanaAnotador(QMainWindow):
             item = self.ui.lv_libros.model().itemFromIndex(indexes[0])
 
             self.ui.f_secciones.setEnabled(True)
+            self.ui.f_nota.setEnabled(False)
+            self.ui.f_notass.setEnabled(False)
 
 
             #self.actualizar_lv_seccion()
             #self.actualizar_lv_paginas()
             #self.actualizar_txt_notas()
+
+    def eliminar_libro(self):
+        indexes = self.ui.lv_libros.selectedIndexes()
+        if len(indexes) == 0:
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Error")
+            msg_box.setIcon(QMessageBox.Critical)
+            msg_box.setText("Debe seleccionar un libro para eliminar")
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            msg_box.exec_()
+        else:
+            indexes_libro = self.ui.lv_libros.selectedIndexes()
+            item_libro = self.ui.lv_libros.model().itemFromIndex(indexes_libro[0])
+            libro = item_libro
+
+            try:
+                self.Anotador.eliminar_libro(libro)
+            except ElementoExistenteError as err:
+                msg_box = QMessageBox(self)
+                msg_box.setWindowTitle("Error pagando factura")
+                msg_box.setIcon(QMessageBox.Critical)
+                msg_box.setText(err.msg)
+                msg_box.setStandardButtons(QMessageBox.Ok)
+                msg_box.exec_()
+            else:
+                self.actualizar_lista_libros()
 
     def abrir_dialogo_crear_seccion(self):
         dialogo = DialogCrearSeccion(self)
@@ -115,6 +144,7 @@ class VentanaAnotador(QMainWindow):
             item = self.ui.lv_secciones.model().itemFromIndex(indexes[0])
 
             self.ui.f_paginas.setEnabled(True)
+            self.ui.f_nota.setEnabled(False)
 
             self.actualizar_lv_paginas()
             #self.actualizar_txt_notas()
@@ -164,19 +194,57 @@ class VentanaAnotador(QMainWindow):
             item = self.ui.lv_paginas.model().itemFromIndex(indexes[0])
 
             self.ui.f_notass.setEnabled(True)
-            self.actualizar_txt_notas()
+            self.ui.f_nota.setEnabled(False)
+            self.actualizar_lv_notass()
 
     def actualizar_lv_paginas(self):
         self.ui.lv_paginas.model().clear()
         indexes = self.ui.lv_secciones.selectedIndexes()
-        item = self.ui.lv_secciones.model().itemFromIndex(indexes[0])
+
+    def abrir_dialogo_crear_notas(self):
+        dialogo = DialogCrearNota(self)
+        resp= dialogo.exec_()
+
+        if resp == QDialog.Accepted:
+            titulo_Nota = dialogo.ui.le_tituloNota.text()
+            fecha_Nota = dialogo.ui.de_fechaNota.text()
+            etiqueta_Nota = dialogo.ui.le_etiquetaNota.text()
+
+            try:
+                nota = self.anotador.crear_nota(titulo_Nota, fecha_Nota, etiqueta_Nota)
+            except ElementoExistenteError as err:
+                msg_box = QMessageBox(self)
+                msg_box.setWindowTitle("Error al crear")
+                msg_box.setIcon(QMessageBox.Critical)
+                msg_box.setText(err.msg)
+                msg_box.setStandardButtons(QMessageBox.Ok)
+                msg_box.exec_()
+            else:
+                self.actualizar_lista_notas(nota)
+
+    def actualizar_lista_notas(self, nota):
+        item = QStandardItem(str(nota))
+        item.setEditable(False)
+        item.nota = nota
+        self.ui.lv_notass.model().appendRow(item)
+
+    def actualizar_lv_notass(self):
+        self.ui.lv_notass.model().clear()
+        indexes = self.ui.lv_notass.selectedIndexes()
+
+
+    def seleccionar_nota(self, selected, deselected):
+        indexes = selected.indexes()
+        if len(indexes) > 0:
+            item = self.ui.lv_notass.model().itemFromIndex(indexes[0])
+
+            self.ui.f_nota.setEnabled(True)
+            self.actualizar_txt_notas()
 
     def actualizar_txt_notas(self):
         self.ui.txt_nota.clear()
         indexes = self.ui.lv_paginas.selectedIndexes()
         item = self.ui.lv_paginas.model().itemFromIndex(indexes[0])
-
-
 
 
 class DialogCrearLibro(QDialog):
@@ -236,7 +304,7 @@ class DialogCrearPagina(QDialog):
 class DialogCrearNota(QDialog):
     def __init__(self, parent = None):
         QDialog.__init__(self, parent)
-        self.ui = Ui_DialogCrearNota
+        self.ui = Ui_DialogCrearNota()
         self.ui.setupUi(self)
 
     def accept(self) -> None:
